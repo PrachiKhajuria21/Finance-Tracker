@@ -1,6 +1,8 @@
 import react from "react";
 import { useState } from "react";
 import TableData from "./TableData";
+import { useNavigate } from "react-router-dom";
+
 
 export default function TableMerge() {
   const getDataFromLS = JSON.parse(localStorage.getItem("Data"));
@@ -8,6 +10,7 @@ export default function TableMerge() {
 
   const [allData, setAllData] = useState(getDataFromLS);
   const [groupBy, setGroupBy] = useState({});
+  const navigate = useNavigate();
 
   const handleGroup = (e) => {
     console.log(e.target.value);
@@ -25,22 +28,42 @@ export default function TableMerge() {
   };
 
   const selectClass ={
-    marginLeft:"5%"
+    marginLeft:"3%"
   }
 
-  console.log("groupBy:::::::: ", groupBy);
-  //   const length = Object.keys(groupBy).length;
-  //   console.log("length:::: ", length);
+  const btn = {
+    color: "white",
+    marginLeft:"50%",
+    backgroundColor:"red",
+    border:"1px solid red",
+    fontWeight:"bold"
+  };
+
+  const label = {
+     fontWeight:"bold",
+     
+  }
+ 
+   const handleSignIn =() =>
+   {
+      navigate("/form")
+   }
+ 
 
   return (
     <>
+      <label style={label}>Check tables here:</label>
       <select  style={selectClass} defaultValue="" onChange={handleGroup}>
+
         <option>none</option>
         <option value="month">Month-year</option>
         <option value="transactionType">Transaction-type</option>
         <option value="fromAccount">From Account</option>
         <option value="toAccount">To Account</option>
       </select>
+
+      <button style={btn} onClick={handleSignIn}>Add Details</button>
+    
 
       {/* <TableData data={allData} setData={setAllData} /> */}
 

@@ -1,8 +1,14 @@
-import react, { useEffect, useForm, useState } from "react";
+import react, { useEffect, useForm, useRef, useState } from "react";
 import DropDown from "./DropDown";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
 
-export default function FormData() {
+export default function FormData({ state }) {
   const INITIAL_STATE = {
     date: "",
     month: "",
@@ -11,13 +17,37 @@ export default function FormData() {
     toAccount: "",
     amount: "",
     receipt: "",
+    id: 0,
     receiptSize: 0,
     notes: "",
   };
 
   const [formData, setFormData] = useState(INITIAL_STATE);
+
+  const location = useLocation();
+  const userId = location.state;
+  console.log("userID:::::::::", userId);
+
+  const localData = JSON.parse(localStorage.getItem("Data"));
+  console.log("localStorage data", localData);
+  // console.log("dataaaa inside form::::::: ",location.state)
+
+  const userData = localData.find(({ id }) => id === userId);
+  console.log("userData::::", userData);
+  // setFormData(userData);
+
+  useEffect(() => {
+    if (userData !== undefined) {
+      setFormData(userData);
+      console.log("::::::", userData);
+    } else {
+      setFormData(INITIAL_STATE);
+    }
+  }, []);
+
   const [validation, setValidation] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const imageRef = useRef(null);
 
   let errors = {};
   const handleValue = (e) => {
@@ -90,35 +120,66 @@ export default function FormData() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setValidation(validate(formData));
-    setIsSubmit(true);
-    console.log(formData);
+    console.log("inside submit", userData);
+    if (userData === undefined) {
+      console.log("HHHHHHHHHHHHHHHHHHH");
+      e.preventDefault();
+      const errFunc = validate(formData);
+      // console.log("functionValue", validate(formData));
+      setValidation(errFunc);
 
-    let array = JSON.parse(localStorage.getItem("Data") || "[]");
-    array.push(formData);
-    localStorage.setItem("Data", JSON.stringify(array));
+      const errorLength = Object.values(errFunc).filter((item) => item !== "");
+      console.log("error length", errorLength.length);
 
-    console.log("Array::::", array);
+      if (errorLength.length === 0) {
+        formData.id = localData.length + 1;
+        setFormData(formData.id);
+        console.log("formDataID: ", formData.id);
+
+        let array = JSON.parse(localStorage.getItem("Data") || "[]");
+        array.push(formData);
+
+        localStorage.setItem("Data", JSON.stringify(array));
+
+        console.log("Array::::", array);
+      }
+    } else {
+      console.log("hellloooooo");
+
+      let array = JSON.parse(localStorage.getItem("Data") || "[]");
+
+      array[userId - 1] = formData;
+
+      localStorage.setItem("Data", JSON.stringify(array));
+    }
   };
 
-  useEffect(() => {
-    console.log("new validate data::: ", validation);
-    if (Object.keys(validation).length === 0 && isSubmit) {
-      console.log(validation);
-    }
-  }, []);
+  console.log("formDataID", formData.id);
+  console.log("validation", validation);
+
 
   const myvariable = {
     color: "red",
   };
 
+  const backBtn = {
+    color: "white",
+    marginLeft:"50%",
+    backgroundColor:"red",
+    border:"1px solid red",
+    fontWeight:"bold"
+  }
+  const submitBtn = {
+    marginLeft:"50%"
+  }
+
   return (
     <div className="container">
-      <span>
-        <Link to="/allMerge">
-          <button>View</button>
+      
+        <Link to="/">
+          <button style={backBtn}>Back</button>
         </Link>
-      </span>
+     
 
       <form onSubmit={handleSubmit}>
         <div className="form-group mt-2">
@@ -127,12 +188,14 @@ export default function FormData() {
             type="date"
             className="form-control"
             onChange={handleValue}
+            defaultValue={formData.date}
             name="date"
           />
         </div>
         <p style={myvariable}>{validation.date}</p>
         <div className="form-group mt-2">
           <label>Month-year: </label>
+
           <DropDown
             data={[
               "january",
@@ -148,6 +211,7 @@ export default function FormData() {
               "november",
               "december",
             ]}
+            value={formData.month}
             name="month"
             setFormData={setFormData}
           />
@@ -159,6 +223,7 @@ export default function FormData() {
             data={["Home Expense", "Personal Expense", "Income Expense"]}
             name="transactionType"
             setFormData={setFormData}
+            value={formData.transactionType}
           />
         </div>
         <p style={myvariable}>{validation.transactionType}</p>
@@ -175,6 +240,7 @@ export default function FormData() {
             ]}
             name="fromAccount"
             setFormData={setFormData}
+            value={formData.fromAccount}
           />
         </div>
         <p style={myvariable}>{validation.fromAccount}</p>
@@ -191,6 +257,7 @@ export default function FormData() {
             ]}
             name="toAccount"
             setFormData={setFormData}
+            value={formData.toAccount}
           />
         </div>
         <p style={myvariable}>{validation.toAccount}</p>
@@ -201,17 +268,27 @@ export default function FormData() {
             className="form-control"
             onChange={handleValue}
             name="amount"
+            value={formData.amount}
           />
         </div>
         <p style={myvariable}>{validation.amount}</p>
         <div className="form-group mt-2">
           <label>Receipt: </label>
           <div className="col-sm-18">
+            <img
+              // type="file"
+              // className="form-control-file"
+              ref={imageRef}
+              onChange={handleValue}
+              name="receipt"
+              src={formData.receipt}
+            />
             <input
               type="file"
               className="form-control-file"
               onChange={handleValue}
               name="receipt"
+              // value={formData.receipt}
             />
           </div>
         </div>
@@ -223,12 +300,13 @@ export default function FormData() {
             className="form-control"
             onChange={handleValue}
             name="notes"
+            value={formData.notes}
           />
         </div>
         <p style={myvariable}>{validation.notes}</p>
 
         <div className="mt-2">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" style={submitBtn} className="btn btn-primary">
             Submit
           </button>
         </div>

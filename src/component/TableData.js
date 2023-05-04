@@ -9,13 +9,13 @@ export default function TableData({ data, setData }) {
   const [order, setOrder] = useState("asc");
   const [search, setSearch] = useState([]);
   const [typeSearch, setTypeSearch] = useState("");
-
-  const records = 4;
+  
+  const records = 5;
   const totalRecords = data.length;
 
   let pages = Math.ceil(totalRecords / records);
   let pageNumber = [...Array(pages + 1).keys()].slice(1);
-
+ 
   const [currentPage, setCurrentPage] = useState(1);
 
   const indexOfLast = records * currentPage;
@@ -85,9 +85,6 @@ export default function TableData({ data, setData }) {
 
   const handleSearch = (event) => {
     setTypeSearch(event.target.value);
-    // console.log("typeSearch", typeSearch);
-
-    // console.log(":::::", typeSearch);
     if (event.target.value.length === 0) {
       setTypeSearch("");
       setSearch("");
@@ -95,7 +92,7 @@ export default function TableData({ data, setData }) {
       return;
     }
 
-    // console.log("dataForm:::", getDataFromLS);
+ 
     const cloneData = [...data];
     const searchValue = event.target.value;
     const searchRes = cloneData.filter((curData) => {
@@ -116,18 +113,18 @@ export default function TableData({ data, setData }) {
     });
 
     setSearch(searchRes);
-    console.log("search Result", search);
-    // setData(searchRes);
+    // console.log("search Result", search);
     setData([]);
+    // console.log("data::::::::::::::: ")
   };
 
-  // useEffect(() => {
-  //   const totalRecords = search.length;
+  const pageBottom = {
+    border:"1px solid red",
+    backgroundColor:"red",
+    fontWeight:"bold",
+    color:"white"
+  }
 
-  //   if (typeSearch === "") {
-  //     setPageNumber(originalPages);
-  //   }
-  // }, [search]);
 
   return (
     <div>
@@ -139,6 +136,7 @@ export default function TableData({ data, setData }) {
       <table style={mystyle}>
         <tbody>
           <tr>
+            <th>ID</th>
             <th onClick={() => HandleSort("date")}>Transaction Date</th>
             <th onClick={() => HandleSort("month")}>Month Year</th>
             <th onClick={() => HandleSort("transactionType")}>
@@ -162,7 +160,7 @@ export default function TableData({ data, setData }) {
       <div>
         {data.length > 0 &&
           pageNumber.map((number) => (
-            <span key={number} onClick={() => handlePagination(number)}>
+            <span style={pageBottom} key={number} onClick={() => handlePagination(number)}>
               {number}
             </span>
           ))}
