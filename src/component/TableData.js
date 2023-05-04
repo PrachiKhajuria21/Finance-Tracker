@@ -1,83 +1,142 @@
+import PageMeta from "./TableComponent";
 import react, { useEffect, useState } from "react";
-export default function TableData() {
+
+export default function TableData({ data, setData }) {
   const getDataFromLS = JSON.parse(localStorage.getItem("Data"));
 
-  const [dataFromLs, setDataFromLs] = useState(getDataFromLS);
+  // const [newState, setNewData] = useState(getDataFromLS);
+
   const [order, setOrder] = useState("asc");
-  const [getPageNumber, setPageNumber] = useState([]);
-  // const [pageData,setPageData] = useState({
-  //   records:4,
-  //   startIndex:0,
-  //   pageNumber:0,
-  //   pages:0
-  // })
+  const [search, setSearch] = useState([]);
+  const [typeSearch, setTypeSearch] = useState("");
 
   const records = 4;
-  const startIndex = 0;
+  const totalRecords = data.length;
 
-  let pages, pageNumber;
+  let pages = Math.ceil(totalRecords / records);
+  let pageNumber = [...Array(pages + 1).keys()].slice(1);
 
-  const handleUserPages = (totalRecords) => {
-    let pages = Math.ceil(totalRecords / records);
+  const [currentPage, setCurrentPage] = useState(1);
 
-    let pageNumber = [...Array(pages + 1).keys()].slice(1);
-    setPageNumber(pageNumber);
-  };
+  const indexOfLast = records * currentPage;
+  const indexOfFirst = indexOfLast - records;
 
-  useEffect(() => {
-    const totalRecords = getDataFromLS.length;
-    handleUserPages(totalRecords);
-  }, []);
-
-  console.log("opages::: 0", pages);
-
-  const handleChange = (page) => {
-    let newPage;
-    let lastPage = records;
-    if (page === 1) {
-      newPage = 0;
-      lastPage = records;
-    } else {
-      newPage = (page - 1) * records;
-      lastPage = newPage + records;
-    }
-
-    let postNew = dataFromLs.slice(newPage, lastPage);
-    setDataFromLs(postNew);
-  };
+  console.log(indexOfFirst, indexOfLast);
 
   const HandleSort = (getname) => {
+    console.log("handle sort:::::: ", search.length);
     if (order === "asc") {
-      sortFunctionasc(getname);
+      if (search.length !== 0) {
+        sortFunctionasc(getname, search);
+        // console.log("order", order);
+        return;
+      }
+      sortFunctionasc(getname, data);
     } else if (order === "desc") {
-      sortFunctiondesc(getname);
+      if (search.length !== 0) {
+        sortFunctionasc(getname, search);
+      }
+      sortFunctiondesc(getname, data);
     } else {
-      setDataFromLs(getDataFromLS);
+      if (search.length !== 0) {
+        setData(search);
+        setOrder("desc");
+      }
+      setData(data);
       setOrder("asc");
     }
   };
 
-  const sortFunctionasc = (getname) => {
-    const sortedArr = dataFromLs.sort((a, b) =>
-      a[getname] < b[getname] ? -1 : 1
-    );
-    setDataFromLs(sortedArr);
-    console.log("sorted array", sortedArr);
+  const sortFunctionasc = (getname, param) => {
+    const sortedArr = param.sort((a, b) => (a[getname] < b[getname] ? -1 : 1));
+    setData(sortedArr);
     setOrder("desc");
+    console.log("inside function:: ", order);
+    return;
   };
 
-  const sortFunctiondesc = (getname) => {
-    const sortedArr = dataFromLs.sort((a, b) =>
-      a[getname] > b[getname] ? -1 : 1
-    );
-    setDataFromLs(sortedArr);
-    console.log("sorted array", sortedArr);
+  const sortFunctiondesc = (getname, param) => {
+    const sortedArr = param.sort((a, b) => (a[getname] > b[getname] ? -1 : 1));
+    setData(sortedArr);
+    // console.log("inside function:: ", order);
     setOrder(" ");
   };
 
+  const handlePagination = (number) => {
+    setCurrentPage(number);
+  };
+
+  const handleSelect = (e) => {
+    // console.log("", e.target.value);
+  };
+
+  const mystyle = {
+    border: "2px solid green",
+    margin: "auto",
+  };
+
+  const searchClass = {
+    marginBottom: "20px",
+    marginLeft: "20%",
+    marginTop: "30px",
+    color: "red",
+    fontWeight: "bold",
+  };
+
+  const handleSearch = (event) => {
+    setTypeSearch(event.target.value);
+    // console.log("typeSearch", typeSearch);
+
+    // console.log(":::::", typeSearch);
+    if (event.target.value.length === 0) {
+      setTypeSearch("");
+      setSearch("");
+      setData([...data.slice(indexOfFirst, indexOfLast)]);
+      return;
+    }
+
+    // console.log("dataForm:::", getDataFromLS);
+    const cloneData = [...data];
+    const searchValue = event.target.value;
+    const searchRes = cloneData.filter((curData) => {
+      if (
+        curData.month.includes(searchValue) ||
+        curData.date.includes(searchValue) ||
+        curData.transactionType.includes(searchValue) ||
+        curData.fromAccount.includes(searchValue) ||
+        curData.toAccount.includes(searchValue) ||
+        curData.amount.includes(searchValue) ||
+        curData.notes.includes(searchValue)
+      ) {
+        console.log("curData::::::: ", curData);
+        return curData;
+      } else {
+        return "";
+      }
+    });
+
+    setSearch(searchRes);
+    console.log("search Result", search);
+    // setData(searchRes);
+    setData([]);
+  };
+
+  // useEffect(() => {
+  //   const totalRecords = search.length;
+
+  //   if (typeSearch === "") {
+  //     setPageNumber(originalPages);
+  //   }
+  // }, [search]);
+
   return (
     <div>
-      <table border="1px solid black">
+      <div>
+        <label style={searchClass}>Search</label>
+        <input type="text" onChange={handleSearch} />
+      </div>
+      <div className="dropDown" onChange={handleSelect}></div>
+      <table style={mystyle}>
         <tbody>
           <tr>
             <th onClick={() => HandleSort("date")}>Transaction Date</th>
@@ -93,32 +152,18 @@ export default function TableData() {
             <td>Action</td>
           </tr>
 
-          {dataFromLs.length > 0 &&
-            dataFromLs.map((data, index) => (
-              <tr key={index}>
-                <td>{data.date}</td>
-                <td>{data.month}</td>
-                <td>{data.transactionType}</td>
-                <td>{data.fromAccount}</td>
-                <td>{data.toAccount}</td>
-                <td>{data.amount}</td>
-                <td>
-                  <img src={data.receipt} alt="test" />
-                </td>
-                <td>{data.notes}</td>
-              </tr>
-            ))}
+          {data.length > 0 && search.length === 0 && (
+            <PageMeta data={data.slice(indexOfFirst, indexOfLast)} />
+          )}
+
+          {search.length > 0 && <PageMeta data={search} />}
         </tbody>
       </table>
       <div>
-        {dataFromLs.length > 0 &&
-          getPageNumber?.map((page, index) => (
-            <span
-              key={page}
-              onClick={() => handleChange(page)}
-              className="page"
-            >
-              {page}
+        {data.length > 0 &&
+          pageNumber.map((number) => (
+            <span key={number} onClick={() => handlePagination(number)}>
+              {number}
             </span>
           ))}
       </div>

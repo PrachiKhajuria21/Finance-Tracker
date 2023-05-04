@@ -115,7 +115,7 @@ export default function FormData() {
   return (
     <div className="container">
       <span>
-        <Link to="/tabledata">
+        <Link to="/allMerge">
           <button>View</button>
         </Link>
       </span>

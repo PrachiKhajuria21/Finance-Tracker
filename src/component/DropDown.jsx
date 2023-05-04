@@ -13,11 +13,11 @@ export default function DropDown({ data, name, setFormData }) {
         defaultValue={""}
       >
         <option value="" disabled>
-          Select Answer
+          Select Option
         </option>
-        {data.map((month) => (
-          <option key={month} value={month}>
-            {month}
+        {data.map((data) => (
+          <option key={data} value={data}>
+            {data}
           </option>
         ))}
       </select>
