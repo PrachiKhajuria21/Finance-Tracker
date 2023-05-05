@@ -8,6 +8,7 @@ export default function TableMerge() {
   const getDataFromLS = JSON.parse(localStorage.getItem("Data"));
   console.log("formData", getDataFromLS);
 
+
   const [allData, setAllData] = useState(getDataFromLS);
   const [groupBy, setGroupBy] = useState({});
   const navigate = useNavigate();
@@ -26,6 +27,13 @@ export default function TableMerge() {
     setGroupBy(get);
     // setAllData([]);
   };
+
+
+  const handleRemove = () =>
+  {
+    localStorage.removeItem("Token");
+     navigate("/")
+  }
 
   const selectClass ={
     marginLeft:"3%"
@@ -48,10 +56,22 @@ export default function TableMerge() {
    {
       navigate("/form")
    }
+   const logout = {
+    color: "white",
+    marginLeft: "80%",
+    backgroundColor: "red",
+    border: "1px solid red",
+    fontWeight: "bold",
+   }
  
 
   return (
     <>
+    <div>
+    <button onClick={handleRemove} style={logout}>Logout</button>
+    </div>
+  
+
       <label style={label}>Check tables here:</label>
       <select  style={selectClass} defaultValue="" onChange={handleGroup}>
 

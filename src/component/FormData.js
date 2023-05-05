@@ -174,7 +174,7 @@ export default function FormData({ state }) {
 
   return (
     <div className="container">
-      <Link to="/">
+      <Link to="/table">
         <button style={backBtn}>Back</button>
       </Link>
 

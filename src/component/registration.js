@@ -97,6 +97,13 @@ export default function Registration()
     marginLeft:"35%",
     marginTop:"2%"
    }
+   const btn1 = {
+    color: "white",
+    marginLeft:"15%",
+    backgroundColor:"green",
+    border:"1px solid green",
+    fontWeight:"bold"
+  };
 
     return(
         <div>
@@ -125,7 +132,7 @@ export default function Registration()
             <input type="password"  name="password"onChange={handleValue}/>
             <p style={myvariable}>{validation.password}</p>
             </div>
-            <button type="submit"  className="btn btn-primary" >
+            <button type="submit"  style={btn1} >
                   Submit
             </button>
         </form>
