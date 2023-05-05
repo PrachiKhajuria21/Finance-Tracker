@@ -2,36 +2,42 @@ import react,{ useState} from "react";
 import TableData from "./TableData";
 import { useNavigate } from "react-router-dom";
 
-export default function PageMeta({ data }) {
+export default function PageMeta({ datar }) {
 
 
   const navigate = useNavigate();
 
   const handleEdit = (index) => {
-    console.log("index::::::",index)
-    // const userData = data.find(({ id }) => id === index); 
-    // console.log( "userData::::",userData );
+    // console.log("index::::::",index)
     navigate("/form",{state:index})
   };
 
+  const edit = {
+    backgroundColor: "green",
+    border: "1px solid green",
+    fontWeight: "bold",
+    color: "white"
+  }
+
   return (
     <>
-      {data.length > 0 &&
-        data.map((data, index) => (
+      { 
+        datar.length > 0 &&
+        datar.map((datar, index) => (
           <tr key={index}>
-            <td>{data.id}</td>
-            <td>{data.date}</td>
-            <td>{data.month}</td>
-            <td>{data.transactionType}</td>
-            <td>{data.fromAccount}</td>
-            <td>{data.toAccount}</td>
-            <td>{data.amount}</td>
+            <td>{datar.id}</td>
+            <td>{datar.date}</td>
+            <td>{datar.month}</td>
+            <td>{datar.transactionType}</td>
+            <td>{datar.fromAccount}</td>
+            <td>{datar.toAccount}</td>
+            <td>{datar.amount}</td>
             <td>
-              <img src={data.receipt} alt="test" />
+              <img src={datar.receipt} alt="test" />
             </td>
-            <td>{data.notes}</td>
+            <td>{datar.notes}</td>
             <td>
-              <button onClick={() => handleEdit(data.id)}>Edit</button>
+              <button style={edit} onClick={() => handleEdit(datar.id)}>Edit</button>
             </td>
           </tr>
         ))}

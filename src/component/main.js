@@ -3,18 +3,16 @@ import { useState } from "react";
 import TableData from "./TableData";
 import { useNavigate } from "react-router-dom";
 
-
 export default function TableMerge() {
   const getDataFromLS = JSON.parse(localStorage.getItem("Data"));
-  console.log("formData", getDataFromLS);
+  // console.log("formData", getDataFromLS);
 
-
-  const [allData, setAllData] = useState(getDataFromLS);
+  // const [allData, setAllData] = useState(getDataFromLS);
   const [groupBy, setGroupBy] = useState({});
   const navigate = useNavigate();
 
   const handleGroup = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
 
     const get = getDataFromLS.reduce(function (a, b) {
       let key = b[e.target.value];
@@ -25,72 +23,81 @@ export default function TableMerge() {
       return a;
     }, {});
     setGroupBy(get);
+    console.log("get", get);
     // setAllData([]);
   };
 
-
-  const handleRemove = () =>
-  {
+  const handleRemove = () => {
     localStorage.removeItem("Token");
-     navigate("/")
-  }
+    navigate("/");
+  };
 
-  const selectClass ={
-    marginLeft:"3%"
-  }
+  const selectClass = {
+    marginLeft: "3%",
+    border: "2px solid red",
+  };
 
   const btn = {
     color: "white",
-    marginLeft:"50%",
-    backgroundColor:"red",
-    border:"1px solid red",
-    fontWeight:"bold"
-  };
-
-  const label = {
-     fontWeight:"bold",
-     
-  }
- 
-   const handleSignIn =() =>
-   {
-      navigate("/form")
-   }
-   const logout = {
-    color: "white",
-    marginLeft: "80%",
+    marginLeft: "70%",
     backgroundColor: "red",
     border: "1px solid red",
     fontWeight: "bold",
-   }
- 
+    // marginTop:"20px",
+    // border:"1px solid green"
+  };
+
+  const label = {
+    marginLeft: "20px",
+    fontWeight: "bold",
+  };
+
+  const handleSignIn = () => {
+    navigate("/form");
+  };
+  const logout = {
+    color: "white",
+    marginLeft: "80%",
+    backgroundColor: "green",
+    border: "1px solid green",
+    fontWeight: "bold",
+    marginTop: "20px",
+  };
 
   return (
     <>
-    <div>
-    <button onClick={handleRemove} style={logout}>Logout</button>
-    </div>
-  
+      <div>
+        <button onClick={handleRemove} style={logout}>
+          Logout
+        </button>
+      </div>
 
       <label style={label}>Check tables here:</label>
-      <select  style={selectClass} defaultValue="" onChange={handleGroup}>
-
-        <option>none</option>
+      <select style={selectClass} defaultValue="" onChange={handleGroup}>
+        <option value="">Whole Table</option>
         <option value="month">Month-year</option>
         <option value="transactionType">Transaction-type</option>
         <option value="fromAccount">From Account</option>
         <option value="toAccount">To Account</option>
       </select>
 
-      <button style={btn} onClick={handleSignIn}>Add Details</button>
-    
+      <button style={btn} onClick={handleSignIn}>
+        Add Details
+      </button>
 
-      {/* <TableData data={allData} setData={setAllData} /> */}
+      {}
 
-      {Object.keys(groupBy).length > 0 &&
+      {Object.keys(groupBy).length > 0 ? (
         Object.keys(groupBy).map((data, index) => (
-          <TableData key={index} data={groupBy[data]} setData={setAllData} />
-      ))}
+          <>
+            {/* /<TableData key={index} data={groupBy[data]} setData={setAllData} /> */}
+
+            <TableData key={index} data={groupBy[data]} />
+          </>
+        ))
+      ) : (
+        <TableData data={getDataFromLS} />
+      )}
     </>
   );
 }

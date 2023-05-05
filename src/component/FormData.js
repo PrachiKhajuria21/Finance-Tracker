@@ -6,6 +6,7 @@ import {
   Route,
   Link,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 
 export default function FormData({ state }) {
@@ -46,7 +47,6 @@ export default function FormData({ state }) {
   }, []);
 
   const [validation, setValidation] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
   const imageRef = useRef(null);
 
   let errors = {};
@@ -76,6 +76,7 @@ export default function FormData({ state }) {
   };
 
   const validate = (value) => {
+    
     if (!value.date) {
       errors.date = "Date is required";
     }
@@ -104,9 +105,7 @@ export default function FormData({ state }) {
     if (!value.receipt) {
       errors.receipt = "Receipt is required";
     }
-    // else if (!value.receipt.match(/\.(jpg|jpeg|png|gif)$/)) {
-    //   errors.receipt = "select valid image";
-    // }
+ 
     if (value.receiptSize > 1024 * 1024) {
       errors.receipt = "Limit exceeded";
     }
@@ -119,12 +118,11 @@ export default function FormData({ state }) {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("inside submit", userData);
+ 
+
     if (userData === undefined) {
       console.log("HHHHHHHHHHHHHHHHHHH");
-      e.preventDefault();
-      const errFunc = validate(formData);
+     const errFunc = validate(formData);
       // console.log("functionValue", validate(formData));
       setValidation(errFunc);
 
@@ -142,6 +140,7 @@ export default function FormData({ state }) {
         localStorage.setItem("Data", JSON.stringify(array));
 
         console.log("Array::::", array);
+        Navigate("/")
       }
     } else {
       console.log("hellloooooo");

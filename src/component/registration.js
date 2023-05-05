@@ -53,7 +53,7 @@ export default function Registration()
        const pass1 = regex1.test(value.password);
        if(!value.password || !(pass1))
        {
-         error.password = "Please enter valid password that contain capital alphabet,small alphabet,special character,length(6-20)";
+         error.password = "Please enter valid password";
        }
 
        return error;
@@ -87,10 +87,12 @@ export default function Registration()
     // }
  
    const myvariable = {
-    color:"red"
+    color:"red", 
+    marginLeft:"5%",
+    fontWeight:"bold"
    }
    const userRegister ={
-    color:"red",
+    color:"blue",
     marginLeft:"40%"
    }
    const userForm = {
