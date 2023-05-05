@@ -21,10 +21,10 @@ export default function TableData({ data, setData }) {
   const indexOfLast = records * currentPage;
   const indexOfFirst = indexOfLast - records;
 
-  console.log(indexOfFirst, indexOfLast);
+  // console.log(indexOfFirst, indexOfLast);
 
   const HandleSort = (getname) => {
-    console.log("handle sort:::::: ", search.length);
+    // console.log("handle sort:::::: ", search.length);
     if (order === "asc") {
       if (search.length !== 0) {
         sortFunctionasc(getname, search);
@@ -51,7 +51,7 @@ export default function TableData({ data, setData }) {
     const sortedArr = param.sort((a, b) => (a[getname] < b[getname] ? -1 : 1));
     setData(sortedArr);
     setOrder("desc");
-    console.log("inside function:: ", order);
+    // console.log("inside function:: ", order);
     return;
   };
 
@@ -105,7 +105,7 @@ export default function TableData({ data, setData }) {
         curData.amount.includes(searchValue) ||
         curData.notes.includes(searchValue)
       ) {
-        console.log("curData::::::: ", curData);
+        // console.log("curData::::::: ", curData);
         return curData;
       } else {
         return "";
