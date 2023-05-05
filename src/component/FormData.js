@@ -157,29 +157,26 @@ export default function FormData({ state }) {
   console.log("formDataID", formData.id);
   console.log("validation", validation);
 
-
   const myvariable = {
     color: "red",
   };
 
   const backBtn = {
     color: "white",
-    marginLeft:"50%",
-    backgroundColor:"red",
-    border:"1px solid red",
-    fontWeight:"bold"
-  }
+    marginLeft: "50%",
+    backgroundColor: "red",
+    border: "1px solid red",
+    fontWeight: "bold",
+  };
   const submitBtn = {
-    marginLeft:"50%"
-  }
+    marginLeft: "50%",
+  };
 
   return (
     <div className="container">
-      
-        <Link to="/">
-          <button style={backBtn}>Back</button>
-        </Link>
-     
+      <Link to="/">
+        <button style={backBtn}>Back</button>
+      </Link>
 
       <form onSubmit={handleSubmit}>
         <div className="form-group mt-2">
